@@ -1,0 +1,2 @@
+def myroundtick(x, base=0.05):
+    return round(float(base * round(float(x)/base)),2)
