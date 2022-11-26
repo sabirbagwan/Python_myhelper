@@ -1,0 +1,33 @@
+import nsepy as nse
+from datetime import date
+import pandas as pd
+from datetime import datetime, timedelta
+
+df = pd.DataFrame()
+df['dates'] = pd.bdate_range('2022-01-01','2022-12-30', freq='B')
+
+########## For Thursdays as an expiry #############
+df["expiry"] = df["dates"].apply(lambda d: d + pd.Timedelta(days=(0 if d.weekday() == 3 else 3-d.weekday()))).shift(-1, axis=0)
+
+hol = nse.live.get_holidays_list(date(2022, 1,1), date(2022, 12, 31))
+hol.reset_index(inplace=True)
+hol['Date'] = pd.to_datetime(hol["Date"])
+
+def check(date):
+    if(date in hol['Date'].values):
+        return(date + timedelta(days = -1))
+    else:
+        return date
+df['expiry'] = df.expiry.apply(check)
+df['expiry2'] = df.expiry.apply(check)
+
+cond = df[df.dates>df.expiry].index
+df.drop(cond, inplace=True)
+df.expiry = df.expiry.dt.strftime('%d%h%y')
+df.expiry = df.expiry.astype('string')
+df.expiry = df.expiry.str.upper()
+df['dates'] = pd.to_datetime(df.dates, format='%Y-%m-%d', errors='coerce')
+df['dates'] = df['dates'].dt.strftime('%d-%m-%Y')
+df['expiry2'] = df['expiry2'].dt.strftime('%d-%m-%Y')
+
+df.to_csv("final.csv", index=False)
