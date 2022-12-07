@@ -10,7 +10,11 @@ def onehot_encode(df, column):
     
     return df
     
-    
+
+############ Checking which columns to hot encode
+
+{column: len(X[column].unique()) for column in X.select_dtypes('object').columns}.keys()
+
     
     
     
