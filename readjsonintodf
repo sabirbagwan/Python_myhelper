@@ -6,5 +6,20 @@ with open('json_files/results.json') as f:
 data
 len(data)
 data[0]['Summary']
-df_match = pd.DataFrame(data[0]['Summary'])
-df_match.head()
+df_summ = pd.DataFrame(data[0]['Summary'])
+df_summ.head()
+
+#################################################
+
+with open('json_files/summary.json') as f:
+    data = json.load(f)
+    
+    all_records = []
+    
+    for rec in data:
+        all_records.extend(rec['Summary'])
+                               
+df_all = pd.DataFrame(all_records)
+df_all
+
+#################################################
