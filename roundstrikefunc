@@ -1,0 +1,2 @@
+def roundstrike(x, base=100):
+    return round(int(base * round(float(x)/base)))
